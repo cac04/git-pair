@@ -1,0 +1,116 @@
+#!/bin/sh
+
+set -eu
+
+add-chum() {
+	if [ "$#" -lt 2 ]
+	then
+		print-usage
+		exit 1
+	fi
+	git config --global "chums.$1" "$2"
+}
+
+list-chums() {
+	git config --global --get-regexp ^chums | cut -d. -f2-
+}
+
+set-active() {
+	if [ "$#" -lt 1 ]
+	then
+		print-usage
+		exit 1
+	fi
+	unset-active
+	for chum in "$@"
+	do
+		if ! git config --global --get "chums.$chum" >/dev/null
+		then
+			unset-active
+			echo Unknown person: $chum >/dev/stderr
+			exit 1
+		fi
+		git config --local --add active-chums.i "$chum"
+	done
+}
+
+unset-active() {
+	git config --local --remove-section active-chums 2>/dev/null || :
+}
+
+show-active() {
+	if git config --local --get active-chums.i >/dev/null
+	then
+		for chum in `git config --local --get-all active-chums.i`
+		do
+			git config --global --get "chums.$chum"
+		done
+	else
+		echo "No pairs currently set."
+	fi
+}
+
+print-coauthors() {
+	if ! git config --local --get active-chums.i >/dev/null
+	then
+		return
+	fi
+	printf "\n\n"
+	OLDIFS="$IFS"
+	IFS=`printf "\n\b"`
+	for i in `git config --local --get-all active-chums.i`
+	do
+		printf "Co-authored-by: %s\n" `git config --global --get "chums.$i"`
+	done
+	IFS="$OLDIFS"
+}
+
+print-usage() {
+	printf "Usage:\n" >/dev/stderr
+	printf "  git pair { add | list | set | unset | show }\n" >/dev/stderr
+	printf "\n" >/dev/stderr
+	printf "add <initials> <email>\n" >/dev/stderr
+	printf "\tAdd a new colleague's details\n\n" >/dev/stderr
+	printf "list\n" >/dev/stderr
+	printf "\tList all colleagues\n\n" >/dev/stderr
+	printf "set <initials0, initials1, ...>\n" >/dev/stderr
+	printf "\tSet the currently active pair (or mob)\n\n" >/dev/stderr
+	printf "unset\n" >/dev/stderr
+	printf "\tUnset the active pair (or mob)\n\n" >/dev/stderr
+	printf "show\n" >/dev/stderr
+	printf "\tDisplay the current active pair (or mob)\n\n" >/dev/stderr
+}
+
+if [ "$#" -lt 1 ]
+then
+	print-usage
+	exit 1
+fi
+
+case "$1" in
+	add)
+		shift
+		add-chum "$@"
+		;;
+	list)
+		list-chums
+		;;
+	set)
+		shift
+		set-active "$@"
+		;;
+	unset)
+		unset-active
+		;;
+	show)
+		show-active
+		;;
+	print)
+		print-coauthors
+		;;
+	*)
+		print-usage
+		exit 1
+		;;
+esac
+

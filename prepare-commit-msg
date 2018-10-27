@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+COMMIT_MSG_FILE=$1
+
+tmpfile="$COMMIT_MSG_FILE"-temp
+sed -e '/^Co-authored-by/d' $COMMIT_MSG_FILE >"$tmpfile"
+mv "$tmpfile" "$COMMIT_MSG_FILE"
+
+git-pair print >>"$COMMIT_MSG_FILE"
