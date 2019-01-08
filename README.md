@@ -42,6 +42,9 @@ Maid Marion <marion@sherwood.org.uk>
 Friar Tuck <tuck@sherwood.org.uk>
 
 $ git commit -m 'Something informative'
+Committing with co-authors:
+ + Maid Marion <marion@sherwood.org.uk>
+ + Friar Tuck <tuck@sherwood.org.uk>
 [master d898f8d] Something informative
  1 file changed, 0 insertions(+), 0 deletions(-)
  create mode 100644 foo
