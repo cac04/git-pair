@@ -15,7 +15,8 @@ append_coauthors() {
 print_coauthors() {
     echo 'Committing with co-authors:'
     OLDIFS="$IFS"
-    IFS=$'\n'
+    IFS='
+'
     for AUTHOR in $(git-pair show)
     do
         printf " + $AUTHOR\n"
