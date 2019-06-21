@@ -5,11 +5,16 @@ set -eu
 append_coauthors() {
     COMMIT_MSG_FILE=$1
 
-    tmpfile="$COMMIT_MSG_FILE"-temp
-    sed -e '/^Co-authored-by/d' $COMMIT_MSG_FILE >"$tmpfile"
-    mv "$tmpfile" "$COMMIT_MSG_FILE"
+    if grep -q -i -e "Co-authored-by" "$COMMIT_MSG_FILE"; then
+      echo 'Co-author already supplied'
+    else
+      tmpfile="$COMMIT_MSG_FILE"-temp
+      sed -e '/^Co-authored-by/d' $COMMIT_MSG_FILE >"$tmpfile"
+      mv "$tmpfile" "$COMMIT_MSG_FILE"
 
-    git-pair print >>"$COMMIT_MSG_FILE"
+      git-pair print >>"$COMMIT_MSG_FILE"
+      print_coauthors
+    fi
 }
 
 print_coauthors() {
@@ -25,4 +30,3 @@ print_coauthors() {
 }
 
 append_coauthors $1
-print_coauthors
