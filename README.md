@@ -61,7 +61,12 @@ Date:   Sat Oct 27 14:17:30 2018 +0100
 
 ## Notes
 
-The list of possible authors is stored in your global `.gitconfig`. The list of
-currently active authors is stored in the local `.git/config` of your current
+The list of possible authors is stored in your global `~/.gitconfig`. The list
+of currently active authors is stored in the local `.git/config` of your current
 repo. This way you can have different authors active in different repos at the
 same time, but you can share their contact details across all repos.
+
+Although `git pair add` will always add to `~/.gitconfig`, the list of possible
+authors is actually read from all your git configs: so a system administrator
+could pre-populate a list of possible authors to be shared by all users by
+putting them in `/etc/gitconfig`.
