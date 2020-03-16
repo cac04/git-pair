@@ -2,14 +2,27 @@
 
 set -eu
 
+remove_coauthors() {
+    commitmsg="$1"
+
+    tmpfile="$commitmsg"-temp
+    sed -e '/^Co-authored-by/d' "$commitmsg" >"$tmpfile"
+    mv "$tmpfile" "$commitmsg"
+}
+
 append_coauthors() {
-    COMMIT_MSG_FILE=$1
+    commitmsg="$1"
 
-    tmpfile="$COMMIT_MSG_FILE"-temp
-    sed -e '/^Co-authored-by/d' $COMMIT_MSG_FILE >"$tmpfile"
-    mv "$tmpfile" "$COMMIT_MSG_FILE"
+    toppart="$commitmsg"-toppart
+    sed -n '/^# ------------------------ >8 ----/q;p' "$commitmsg" >"$toppart"
 
-    git-pair print >>"$COMMIT_MSG_FILE"
+    btmpart="$commitmsg"-bottompart
+    sed -n '/^# ------------------------ >8 ----/,$p' "$commitmsg" >"$btmpart"
+
+    mv "$toppart" "$commitmsg"
+    git-pair print >>"$commitmsg"
+    cat "$btmpart" >>"$commitmsg"
+    rm "$btmpart"
 }
 
 print_coauthors() {
@@ -24,5 +37,6 @@ print_coauthors() {
     IFS="$OLDIFS"
 }
 
-append_coauthors $1
+remove_coauthors "$1"
+append_coauthors "$1"
 print_coauthors
