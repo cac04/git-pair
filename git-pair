@@ -12,7 +12,7 @@ add_chum() {
 }
 
 list_chums() {
-	git config --global --get-regexp ^chums | cut -d. -f2-
+	git config --get-regexp ^chums | cut -d. -f2-
 }
 
 set_active() {
@@ -24,7 +24,7 @@ set_active() {
 	unset_active
 	for chum in "$@"
 	do
-		if ! git config --global --get "chums.$chum" >/dev/null
+		if ! git config --get "chums.$chum" >/dev/null
 		then
 			unset_active
 			echo Unknown person: $chum >/dev/stderr
@@ -43,7 +43,7 @@ show_active() {
 	then
 		for chum in `git config --local --get-all active-chums.i`
 		do
-			git config --global --get "chums.$chum"
+			git config --get "chums.$chum"
 		done
 	else
 		echo "No pairs currently set."
@@ -60,7 +60,7 @@ print_coauthors() {
 	IFS=`printf "\n\b"`
 	for i in `git config --local --get-all active-chums.i`
 	do
-		printf "Co-authored-by: %s\n" `git config --global --get "chums.$i"`
+		printf "Co-authored-by: %s\n" `git config --get "chums.$i"`
 	done
 	IFS="$OLDIFS"
 }
