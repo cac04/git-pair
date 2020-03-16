@@ -1,8 +1,8 @@
 # Git for Pair Programming
 
-Git commit messages can only have one author. However, there is a convention
-that multiple authors can be recorded by lines beginning with `Co-authored-by:`
-at the end of a commit message. This convention is [now supported by
+Git commits can only have one author. However, there is a convention that
+multiple authors can be recorded by lines beginning with `Co-authored-by:` at
+the end of a commit message. This convention is [now supported by
 GitHub](https://help.github.com/articles/creating-a-commit-with-multiple-authors/)
 so all the co-authors can share the internet points.
 
